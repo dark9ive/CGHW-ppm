@@ -3,7 +3,6 @@
 #include<math.h>
 #include<vector>
 #include<float.h>
-//#include "vec3.h"
 
 using namespace std;
 
@@ -146,12 +145,16 @@ vec3 drawpixel(int x, int y, int width, int height, float R, float G, float B){
 	vector<pair<vec3, float>> sphereposi;
 	sphereposi.push_back(pair<vec3, float>(vec3(0.25, 0, -1), 0.2));
 	sphereposi.push_back(pair<vec3, float>(vec3(-0.25, 0, -2), 0.5));
+	sphereposi.push_back(pair<vec3, float>(vec3(-0.25, -3, -5), 0.5));
+	sphereposi.push_back(pair<vec3, float>(vec3(1, -3, -6), 0.5));
+	sphereposi.push_back(pair<vec3, float>(vec3(2, -4, -7), 0.5));
+	sphereposi.push_back(pair<vec3, float>(vec3(-3, -2, -8), 0.5));
 	
 	float nearestdistance = FLT_MAX;
 	vec3 floor = hitfloor(camposi, direction, lightsources);
 	if(floor.v[0] < FLT_MAX){
 		nearestdistance = floor.v[0];
-		color = vec3(0.5+0.5*floor.v[1], 0.5+0.5*floor.v[1], 0.5+0.5*floor.v[1]);
+		color = vec3(0.35+0.65*floor.v[1], 0.35+0.65*floor.v[1], 0.35+0.65*floor.v[1]);
 	}
 	for(int a = 0; a < sphereposi.size(); a++){
 		vec3 ans = hitsphere(camposi, direction, sphereposi[a].first, sphereposi[a].second, lightsources);
