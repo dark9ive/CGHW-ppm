@@ -110,20 +110,49 @@ vec3 hitsphere(vec3 camposi, vec3 dire, vec3 sphereposi, float r, vector<vec3> l
 	}
 }
 
+vec3 hitfloor(vec3 camposi, vec3 direction, vector<vec3> lightsources){
+	vec3 floor2cam(0, -5, 0);
+	if(direction.dot(floor2cam) <= 0){
+		return vec3(FLT_MAX, 0, 0);
+	}
+	else{
+		float yunit = -5/direction.v[1];
+		float distance = pow(direction.dot(direction), 0.5)*yunit;
+		vec3 floorposi(direction);
+		floorposi.mult(yunit);
+		float totalreturnval = 0.001;
+		for(int a = 0; a < lightsources.size(); a++){
+			vec3 light2floor(lightsources[a]);
+			light2floor.subt(floorposi);
+			vec3 floor(0, 5, 0);
+			float returnval = light2floor.dot(floor);
+			returnval /= pow(light2floor.dot(light2floor), 0.5);
+			returnval /= pow(floor.dot(floor), 0.5);
+			totalreturnval = max(returnval, totalreturnval);
+		}
+		return vec3(distance, totalreturnval, 0);
+	}
+}
+
 vec3 drawpixel(int x, int y, int width, int height, float R, float G, float B){
 	vec3 camposi(0, 0, 0);
 	vec3 direction(4.0*((float(y)+0.5)/float(width))-2.0, 2.0*((float(x)+0.5)/float(height))-1.0, -1);
 	vec3 color = skyinit(direction);
 
 	vector<vec3> lightsources;
-	//lightsources.push_back(vec3(-1, 1, 0));
-	lightsources.push_back(vec3(0, 0, 0));
+	lightsources.push_back(vec3(-5, 5, 5));
+	//lightsources.push_back(vec3(0, 0, 0));
 
 	vector<pair<vec3, float>> sphereposi;
 	sphereposi.push_back(pair<vec3, float>(vec3(0.25, 0, -1), 0.2));
 	sphereposi.push_back(pair<vec3, float>(vec3(-0.25, 0, -2), 0.5));
 	
 	float nearestdistance = FLT_MAX;
+	vec3 floor = hitfloor(camposi, direction, lightsources);
+	if(floor.v[0] < FLT_MAX){
+		nearestdistance = floor.v[0];
+		color = vec3(0.5+0.5*floor.v[1], 0.5+0.5*floor.v[1], 0.5+0.5*floor.v[1]);
+	}
 	for(int a = 0; a < sphereposi.size(); a++){
 		vec3 ans = hitsphere(camposi, direction, sphereposi[a].first, sphereposi[a].second, lightsources);
 		if(ans.v[1] > 0.0){
