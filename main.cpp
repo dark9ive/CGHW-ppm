@@ -130,7 +130,7 @@ vec3 seesphere(vec3 camposi, vec3 dire, int index, vector<vec3>& lightsources, v
 		direbuf.mult(unit2surface);
 		surfaceposi.add(verticalposi);
 		surfaceposi.subt(direbuf);
-		if(spheres[index].material == 0){			//	reflect level settings are here
+		if(spheres[index].material == 0){
 			float totalreturnval = 0.001;
 			for(int a = 0; a < lightsources.size(); a++){
 				float returnval = 0;
